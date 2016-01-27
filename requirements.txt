@@ -1,0 +1,7 @@
+decorator>=4.0.4
+colorama>=0.3.3
+bottle>=0.12.9
+sxclient>=0.12.1
+keystonemiddleware>=3.0.0
+lxml>=3.5.0
+PasteDeploy>=1.5.2
