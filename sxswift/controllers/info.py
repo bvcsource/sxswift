@@ -37,7 +37,7 @@ def _validate_signature(path, methods, sig, expires):
         raise bottle.HTTPError(400, 'expires points at the time in past')
 
     has_valid_signature = False
-    admin_key = get_settings()['this.admin_key']
+    admin_key = get_settings().get('this.admin_key')
     for method in methods:
         digested_msg = _get_hmac(method, path, expires, admin_key)
         sigs_are_equal = const_time_is_equal(digested_msg, sig)

@@ -5,7 +5,7 @@ License: Apache 2.0, see LICENSE for more details.
 
 import logging
 import signal
-
+import os.path
 import requests
 
 import sxclient
@@ -22,7 +22,11 @@ def configure_sx(application):
 
     # SX initialization
     global _sxcontroller
-    user_data = sxclient.UserData.from_key_path(settings['sx.admin_key'])
+    if os.path.isfile(settings['sx.admin_key']):
+    	user_data = sxclient.UserData.from_key_path(settings['sx.admin_key'])
+    else:
+    	user_data = sxclient.UserData.from_key(settings['sx.admin_key'])
+
     cluster = sxclient.Cluster(
         settings['sx.cluster_name'],
         ip_addresses=settings.get('sx.host_list'),
