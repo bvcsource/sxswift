@@ -84,6 +84,8 @@ def list_files(vol_name, prefix, delimiter, start_marker, end_marker, limit):
     file_objects = sxcontroller.listFiles.json_call(
         vol_name, recursive=True, limit=str(limit)
     )
+    # TODO: fix json handling and drop this sort
+    file_objects = sorted(file_objects, key=lambda el: el['name'])
     for file_name, file_object in file_objects['fileList'].iteritems():
         file_name = file_name.lstrip('/')
         file_meta = sxcontroller.getFileMeta.json_call(vol_name, file_name)
