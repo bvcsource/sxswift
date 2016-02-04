@@ -4,6 +4,8 @@ License: Apache 2.0, see LICENSE for more details.
 '''
 
 import logging
+import json
+import collections
 from datetime import datetime
 
 from sxclient.exceptions import SXClusterNotFound, SXClusterFatalError
@@ -80,12 +82,10 @@ def modify_volume(vol_name, meta, new_size):
 
 def list_files(vol_name, prefix, delimiter, start_marker, end_marker, limit):
     sxcontroller = get_sxcontroller()
-    # TODO: create a proper pattern for sx call
-    file_objects = sxcontroller.listFiles.json_call(
+    file_objects = sxcontroller.listFiles.call(
         vol_name, recursive=True, limit=str(limit)
-    )
-    # TODO: fix json handling and drop this sort
-    file_objects = sorted(file_objects, key=lambda el: el['name'])
+    ).text
+    file_objects = json.loads(file_objects, object_pairs_hook=collections.OrderedDict)
     for file_name, file_object in file_objects['fileList'].iteritems():
         file_name = file_name.lstrip('/')
         file_meta = sxcontroller.getFileMeta.json_call(vol_name, file_name)
