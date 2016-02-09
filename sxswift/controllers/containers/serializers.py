@@ -17,7 +17,7 @@ class JSONSerializer(object):
 
 class XMLSerializer(object):
     content_type = 'application/xml'
-    KEYS = ('name', 'hash', 'bytes', 'content_type', 'last_modified')
+    KEYS = ('name', 'hash', 'bytes', 'content_type', 'last_modified', 'subdir')
 
     def serialize(self, data):
         root = etree.Element('container', name=data['name'])

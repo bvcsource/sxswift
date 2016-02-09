@@ -124,6 +124,8 @@ def get_container_data(
     result['meta'].update(volume_meta)
 
     for file_object in file_objects:
+        if len(result['content']) >= limit:
+            break
         name = file_object['name']
         if start_marker and name <= start_marker:
             continue
@@ -135,12 +137,27 @@ def get_container_data(
             continue
 
         result['meta']['x-container-object-count'] += 1
+
+        if delimiter:
+            if prefix:
+                name = name[len(prefix):]
+            parts = name.split(delimiter)
+            if len(parts) > 1:
+                dirname = parts[0] + '/'
+                if start_marker and prefix + dirname <= start_marker:
+                    continue
+                if dirname != prefix:
+                    subdir = {'subdir': u'%s' % (prefix + dirname)}
+                    if len(result['content']) > 0 and result['content'][-1] == subdir:
+                        continue
+                    result['content'].append(subdir)
+                    continue
+
+        if name.endswith('.sxnewdir'):
+            continue
+
         result['meta']['x-container-bytes-used'] += file_object['bytes']
-
         result['content'].append(file_object)
-
-        if len(result['content']) >= limit:
-            break
 
     return result
 

@@ -79,6 +79,9 @@ class ObjectSaver(ObjectProcessor):
                 fileMeta=meta
             )
 
+        if self.object_path.endswith('/'):
+            self.object_path += '.sxnewdir'
+
         file_uploader = SXFileUploader(sxcontroller)
         file_uploader.upload_stream(
             volume=self.vol_name,

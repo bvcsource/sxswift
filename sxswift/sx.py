@@ -7,6 +7,7 @@ import logging
 import signal
 import os.path
 import requests
+import sys
 
 import sxclient
 from sxswift import config
@@ -17,15 +18,17 @@ _sxcontroller = None
 
 
 def configure_sx(application):
+    reload(sys)
+    sys.setdefaultencoding('utf8')
     settings = config.get_settings()
     logger.debug('Configure called with settings: %s.' % settings)
 
     # SX initialization
     global _sxcontroller
     if os.path.isfile(settings['sx.admin_key']):
-    	user_data = sxclient.UserData.from_key_path(settings['sx.admin_key'])
+        user_data = sxclient.UserData.from_key_path(settings['sx.admin_key'])
     else:
-    	user_data = sxclient.UserData.from_key(settings['sx.admin_key'])
+        user_data = sxclient.UserData.from_key(settings['sx.admin_key'])
 
     cluster = sxclient.Cluster(
         settings['sx.cluster_name'],
