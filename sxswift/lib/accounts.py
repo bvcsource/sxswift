@@ -53,6 +53,7 @@ def create_user(user_name):
 def create_user_if_not_exists(user_name):
     try:
         get_user_object(user_name)
+        return
     except NotFound:
         pass
     create_user(user_name)
@@ -117,15 +118,21 @@ def get_account_data(
 
         result['meta']['x-account-container-count'] += 1
 
-        count = 0
-        size = 0
-        sxfiles = sxcontroller.listFiles.json_call(vol_name, recursive=True)
-        for sxfile in sxfiles['fileList'].itervalues():
-            count += 1
-            result['meta']['x-account-object-count'] += 1
-            file_size = sxfile['fileSize']
-            size += file_size
-            result['meta']['x-account-bytes-used'] += file_size
+        if vol_info.get('filesCount'):
+            count = vol_info['filesCount']
+            result['meta']['x-account-object-count'] = count
+            size = vol_info['filesSize']
+            result['meta']['x-account-bytes-used'] = size
+        else:
+            count = 0
+            size = 0
+            sxfiles = sxcontroller.listFiles.json_call(vol_name, recursive=True)
+            for sxfile in sxfiles['fileList'].itervalues():
+                count += 1
+                result['meta']['x-account-object-count'] += 1
+                file_size = sxfile['fileSize']
+                size += file_size
+                result['meta']['x-account-bytes-used'] += file_size
 
         content.append({
             'count': count,
