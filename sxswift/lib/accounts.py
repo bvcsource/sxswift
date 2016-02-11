@@ -25,7 +25,10 @@ def get_user_object(name):
     users = sxcontroller.listUsers.json_call()
 
     if name not in users:
-        raise NotFound
+        create_user(name)
+        users = sxcontroller.listUsers.json_call()
+        if name not in users:
+            raise NotFound
 
     return users[name]
 
@@ -39,18 +42,21 @@ def get_user_meta(user):
     except Exception:
         return {}
 
-def create_user_if_not_exists(user_name):
-    try:
-        get_user_object(user_name)
-        return False
-    except NotFound:
-        pass
 
+def create_user(user_name):
     sxcontroller = get_sxcontroller()
     password = ''.join(random.choice(string.letters + string.digits) for i in range(16))
     new_user_data = sxclient.UserData.from_userpass_pair(user_name, password, sxcontroller.get_cluster_uuid())
     sxcontroller.createUser.json_call(userName=user_name, userType="normal", userKey=new_user_data.secret_key.encode('hex'))
-    return True
+
+
+def create_user_if_not_exists(user_name):
+    try:
+        get_user_object(user_name)
+    except NotFound:
+        pass
+    create_user(user_name)
+
 
 @log_args(logger)
 def update_account_meta(user_name, remove_list, update_dict):
