@@ -84,7 +84,7 @@ def list_files(vol_name, prefix, delimiter, start_marker, end_marker, limit):
     sxcontroller = get_sxcontroller()
     file_objects = sxcontroller.listFiles.call(
         vol_name, recursive=True, limit=str(limit)
-    ).text
+    ).content
     file_objects = json.loads(file_objects, object_pairs_hook=collections.OrderedDict)
     for file_name, file_object in file_objects['fileList'].iteritems():
         file_name = file_name.lstrip('/')
