@@ -25,6 +25,11 @@ def configure_urls(application):
     application.route('/', 'GET', get_home)
 
 
+    from sxswift.controllers.healthcheck import get_healthcheck
+    application.route('/healthcheck', 'GET', get_healthcheck)
+    application.route('/healthcheck/', 'GET', get_healthcheck)
+
+
     from sxswift.controllers.info import get_info
     application.route('/info', 'GET', get_info)
     application.route('/info/', 'GET', get_info)
