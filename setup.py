@@ -53,7 +53,7 @@ setup(
     name='sxswift',
     version=get_version(),
     description='SXSwift - translate Swift protocol into SX',
-    long_description=get_description_from_file('README.rst'),
+    long_description=get_description_from_file('README'),
     author='Skylable Ltd.',
     author_email='sx-users@lists.skylable.com',
     packages=packages,
