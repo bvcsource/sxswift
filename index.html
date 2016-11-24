@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags-->
+    <title>SXSwift - How It Works</title>
+    <!-- Bootstrap-->
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/jquery-form.js"></script>
+    <script src="assets/js/contact-us.js"></script>
+    <script src="assets/js/bootstrap.js"></script>
+    <script src="assets/js/spin.js"></script>
+    <script src="assets/js/ladda.js"></script>
+    <script src="assets/js/highlight.js"></script>
+    <script src="assets/js/lightbox.js"></script>
+    <script src="assets/js/custom.js"></script>
+    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="assets/css/font-awesome.css" rel="stylesheet">
+    <link href="assets/css/animate.css" rel="stylesheet">
+    <link href="assets/css/tomorrow.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries-->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file://-->
+    <!--if lt IE 9
+    script(src='https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js')
+    script(src='https://oss.maxcdn.com/respond/1.4.2/respond.min.js')
+    -->
+  </head>
+  <body>
+    <div class="header">
+      <section class="home-main-section">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12 page-header">
+              <h1>SXSwift - How it works</h1>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <section class="section-cloud section-white">
+      <div class="container">
+        <div class="row">
+          <div class="flex-box flex-box--header">
+            <div class="col-md-6">
+              <h3>What is SXSwift?</h3>
+              <p>OpenStack is a free and open-source cloud computing platform. The underlying object storage that OpenStack is shipped with is known as Swift. SXSwift is an in-place replacement for Swift which allows OpenStack to communicate with SX Cluster. It translates Swift protocol into requests understandable by SX Cluster and it is fully compatible with other OpenStack components.</p><a href="install.html" class="btn btn-primary">Install</a>
+            </div>
+            <div class="col-md-6 text-center"><img src="assets/img/sxswift-img.svg" class="company-img md-top-margin-5"></div>
+          </div>
+        </div>
+      </div><img src="assets/img/divider.svg" class="section-divider hidden-sm hidden-xs">
+    </section>
+    <section class="section-gray section-cloud section-padding">
+      <div class="container">
+        <div class="row">
+          <div class="flex-box flex-box--header">
+            <div class="col-md-6 text-center"><img src="assets/img/sxswift-img2.svg" class="company-img md-btm-margin-5"></div>
+            <div class="col-md-6 text-left">
+              <h3>How it works</h3>
+              <p>SXSwift talks with OpenStack in Swift’s protocol. It acts as a translator between OpenStack and SX Cluster, i.e. it translates OpenStack requests into SX Cluster requests and translates SX Cluster responses into OpenStack responses. Additionally it handles two types of authentication: Keystone (OpenStack’s default authenticaton service) and native Swift’s authentication. It supports all Swift’s features making it an ideal replacement.</p>
+            </div>
+          </div>
+        </div>
+      </div><img src="assets/img/divider.svg" class="section-divider hidden-sm hidden-xs">
+    </section>
+    <section class="section-white section-cloud section-padding">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 features text-center">
+            <h3 class="btm-margin-5">Features</h3>
+            <div class="col-md-4 text-center"><img src="assets/img/sxswift-openstack-icon.svg" class="features__icon">
+              <h4 class="features__header">Openstack Compatibility</h4>
+              <p class="features__description">SXSwift is fully compatible with other OpenStack components like Keystone or Glance. Use it as a drop-in replacement for OpenStack’s Swift.</p>
+            </div>
+            <div class="col-md-4 text-center"><img src="assets/img/sxswift-safe-icon.svg" class="features__icon">
+              <h4 class="features__header">Safe & efficient</h4>
+              <p class="features__description">For safety SXSwift relies on either Keystone (OpenStack’s identity server) or it’s own builtin authentication mechanism (fully compatible with Swift). SXSwift is highly efficient since it relies on SX Cluster under the hood.</p>
+            </div>
+            <div class="col-md-4 text-center"><img src="assets/img/sxswift-scalable-icon.svg" class="features__icon">
+              <h4 class="features__header">Scalable</h4>
+              <p class="features__description">Install multiple SXSwift servers and add all of them to a round-robin to load balance the traffic among them.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags-->
+    <title>SXSwift - Install</title>
+    <!-- Bootstrap-->
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/jquery-form.js"></script>
+    <script src="assets/js/contact-us.js"></script>
+    <script src="assets/js/bootstrap.js"></script>
+    <script src="assets/js/spin.js"></script>
+    <script src="assets/js/ladda.js"></script>
+    <script src="assets/js/highlight.js"></script>
+    <script src="assets/js/lightbox.js"></script>
+    <script src="assets/js/custom.js"></script>
+    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="assets/css/font-awesome.css" rel="stylesheet">
+    <link href="assets/css/animate.css" rel="stylesheet">
+    <link href="assets/css/tomorrow.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries-->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file://-->
+    <!--if lt IE 9
+    script(src='https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js')
+    script(src='https://oss.maxcdn.com/respond/1.4.2/respond.min.js')
+    -->
+  </head>
+  <body>
+    <div class="header">
+      <section class="home-main-section">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12 page-header">
+              <h1>SXSwift - Install</h1>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <section class="section-cloud section-last">
+      <div class="container">
+        <div class="row install">
+          <div class="col-md-12">
+            <h3>SXSwift installation & configuration</h3>
+            <p>In this example, we will install SXSwift inside a virtual environment, which is a recommended way for test deployments. You can omit mkvirtualenv to install SXSwift globally.</p>
+            <pre><code>$ git clone https://github.com/enospc/sxswift.git 
+$ cd sxswift
+$ mkvirtualenv sxswift
+$ python setup.py develop
+$ pip install -r requirements.dev.txt</code></pre>
+            <p>Now make a copy of the template configuration file and open it in your favourite editor:</p>
+            <pre><code>$ cp examples/example-paste.ini sxswift-paste.ini
+$ vim sxswift-paste.ini</code></pre>
+            <p>We need to adjust a few entries. The first option to be updated is http in the [uwsgi] section, which specifies the address and port SXSwift will be listening on. We will run it on the same system as DevStack, on port 8080:</p>
+            <pre><code>[uwsgi]
+http = 172.16.155.20:8080</code></pre>
+            <p>Now we will update the [app:core] section. In this.storage_url make sure it points to the right address:</p>
+            <pre><code>this.storage_url = http://172.16.155.20:8080/v1/</code></pre>
+            <p>SXSwift will need an administrative access to the SX cluster, in order to create and delete volumes. In sx.admin_key you will need to enter the admin key or path to a file containing the key. If you enter the key in sxswift-paste.ini, make sure the file is not world readable!</p>
+            <pre><code>sx.cluster_name = my.sxcluster.com
+sx.admin_key = 0DPiKuNIrrVmD8IUDuw1hQxLqZd4chhYFsz3kV0j0p0zGYBz07SEsQAA
+sx.port = 443
+sx.verify_cert = 1
+sx.ssl = 1</code></pre>
+            <p>If your SX cluster doesn’t use a DNS name, you will need to provide an additional option sx.host_list and provide an IP address of at least one node (when providing more IPs, separate them with a comma). There are some volume related options worth visiting:</p>
+            <pre><code>default.volume.size = 107374182400
+default.volume.replica_count = 2
+default.volume.max_revisions = 1</code></pre>
+            <p>With the above settings, all new volumes created by SXSwift will have a size of 100GB, replica 2, and store a single revision of each file. You may want to tune them up but keep in mind the maximum replica count is limited by the number of nodes or zones in the SX cluster. If the replica count or the volume size cannot be satisfied, SXSwift will fail to create a volume and report an internal error to the caller.</p>
+            <p>Finally, we configure Keystone authentication in [filter:authtoken]. Provide a proper IP address and credentials (in case you’re not using DevStack defaults). The port numbers are standard and in most cases you shouldn’t change them.</p>
+            <pre><code>[filter:authtoken]
+paste.filter_factory = keystonemiddleware.auth_token:filter_factory
+identity_uri = http://172.16.155.20:35357
+admin_tenant_name = service
+admin_user = swift
+admin_password = nova
+auth_uri = http://172.16.155.20:5000
+include_service_catalog = False
+delay_auth_decision = True</code></pre>
+            <h3>Running SXSwift</h3>
+            <p>Before starting SXSwift we need to stop Swift. The simplest way is to kill all swift-* processes, then you can also edit the file stack-screenrc in the root directory of DevStack and comment out Swift-related entries to avoid starting Swift next time you restart DevStack. To start SXSwift execute the following command:</p>
+            <pre><code>$ uwsgi --ini-paste sxswift-paste.ini</code></pre>
+            <p>This will run SXSwift in the foreground with the default logging turned on, which should be useful in case of any misconfiguration or other issues. Run the following command (use your custom admin password if necessary) to check if SXSwift is working properly:</p>
+            <pre><code>$ swift --os-username admin --os-password nova stat
+Account: AUTH_be7a62c551da41d0a282ca4c53346987
+Containers: 0
+Objects: 0
+Bytes: 0
+Access-Control-Allow-Methods: *
+X-Timestamp: 0
+Allow: *
+X-Trans-Id: 5358-d88ff0a9-5330-43c8-8988-422066d46d17
+Access-Control-Allow-Origin: *</code></pre>
+            <p>If you get an error, please check the messages from SXSwift. It could be due to a configuration mistake or a problem with communication with the SX cluster – in most cases you should be able to quickly find out the reason in the SXSwift logs. If you get an output like the above one, this means your SXSwift works and properly integrates with Keystone.</p>
+            <h3>Managing containers with horizon</h3>
+            <p>When SXSwift is up and running, you should be able to create new containers with Horizon. Go to Object Store -> Containers, where you can create new containers and perform basic operations, such as uploading or downloading of files or creating pseudo-folders.</p>
+            <h3>Glance configuration</h3>
+            <p>We will configure Glance to use SXSwift as the default storage for images. Open /etc/glance/glance-api.conf file and update the [glance_store] section as follows:</p>
+            <pre><code>[glance_store]
+stores = swift
+default_swift_reference = ref1
+swift_store_config_file = /etc/glance/glance-swift-store.conf
+swift_store_create_container_on_put = True
+default_store = swift</code></pre>
+            <p>Then edit /etc/glance/glance-swift-store.conf to contain the following entries:</p>
+            <pre><code>[ref1]
+auth_version = 3
+project_domain_id = default
+user_domain_id = default
+auth_address = http://172.16.155.20:5000/v3
+key = nova
+user = service:swift</code></pre>
+            <p>Restart Glance – you can do it by following the standard procedure of restarting DevStack services:  join the screen session with ./rejoin-stack.sh in the root DevStack directory and then restart glance-registry and glance-api which are found in g-reg and g-api screens respectively.</p>
+            <h3>Testing integration with glance</h3>
+            <p>Log into the Dashboard and go to Admin -> System -> Images, click on Create Image and add a new image. SXSwift should create a new volume for glance and upload the image into it. You can check that right on the cluster by listing its volumes:</p>
+            <pre><code>$ sxls -l sx://admin@my.sxcluster.com
+VOL rep:2 rev:1 rw - 13288086 107374182400 0% swift sx://admin@my.sxcluster.com/glance</code></pre>
+            <p>Success, Glance now uses the SX cluster to store its images!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
